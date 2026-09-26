@@ -39,3 +39,23 @@ held-out test performance.
 
 The focused local test suite passes 34 tests. The GitHub workflow runs the
 statistical and partition tests without EEG files or model weights.
+
+## BIDS validation of the published dataset
+
+The HF dataset revision `ae9f68fbf10dec84b25c8252826b7e4e7dc4422f`
+passes BIDS Validator 3.0.2 with zero errors. The
+[dataset validation summary](https://huggingface.co/datasets/Capur/IESSEEG/blob/main/bids_validation.json)
+records the remaining warnings. Recommended acquisition fields, anonymized
+attribution, and event tables that are unavailable are not invented to suppress warnings.
+
+Duplicate auxiliary `POL RESP` channel names were made unique in 304 EDF headers
+and their channel tables. Their original names remain in `source_name`.
+Digital samples and physical calibration in all 304 affected files were checked
+against their original sources and are unchanged. Scalp EEG labels are unchanged.
+
+The code's `validate` command checks the release inventory, joins, folds and
+file availability. It is separate from the official BIDS validator. Benchmark
+annotation tables, fixed folds and sampling coordinates are BIDS extensions;
+they are excluded from BIDS filename validation and verified by the code adapter.
+The updated data successfully prepare all 950 benchmark inputs, including 600
+selected-segment rows and 200 routine-segment rows.

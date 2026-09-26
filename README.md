@@ -50,6 +50,10 @@ python -m iesseeg validate --data /data/IESSEEG --work /scratch/iesseeg
 python -m iesseeg prepare --data /data/IESSEEG --work /scratch/iesseeg
 ```
 
+The dataset passes the official BIDS validator with zero errors; remaining
+metadata warnings are listed in the [validation record](docs/VALIDATION.md).
+The CLI `validate` command checks benchmark data consistency, separately from BIDS.
+
 The full EEG download is approximately 119 GB. `validate --metadata-only` can
 check the tables before the signals finish downloading. Generated model inputs
 and checkpoints require additional space in the work directory.
