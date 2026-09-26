@@ -1,0 +1,84 @@
+{
+  "status": "prespecified sustained-response experiment",
+  "seed": 20260924,
+  "task": "sustained",
+  "conditions": [
+    "PRE",
+    "POST"
+  ],
+  "training_source": "original_long_edf",
+  "sampling": "uniform_patient_then_uniform_valid_start",
+  "samples_per_epoch": 5000,
+  "max_epochs": 100,
+  "batch_size": 64,
+  "workers": 8,
+  "validation_windows_per_patient": 64,
+  "test_windows_per_patient": 64,
+  "early_stopping": {
+    "monitor": "fixed_validation_window_auroc",
+    "mode": "max",
+    "patience": 10,
+    "min_delta": 0.0001
+  },
+  "refit": false,
+  "loss": "BCEWithLogitsLoss",
+  "precision": "float32",
+  "models": {
+    "biot": {
+      "window_seconds": 30,
+      "optimizer": "Adam",
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "scheduler": "constant",
+      "warmup_epochs": 0,
+      "min_lr": 0.001,
+      "layer_decay": 1.0,
+      "clip_grad": 1.0,
+      "pooling": "native",
+      "cuda": 0
+    },
+    "cbramod": {
+      "window_seconds": 30,
+      "optimizer": "AdamW",
+      "lr": 0.0001,
+      "weight_decay": 0.05,
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "scheduler": "cosine",
+      "warmup_epochs": 0,
+      "min_lr": 1e-06,
+      "layer_decay": 1.0,
+      "clip_grad": 1.0,
+      "pooling": "mean_channel_time",
+      "cuda": 3
+    },
+    "labram": {
+      "window_seconds": 16,
+      "optimizer": "AdamW",
+      "lr": 0.0005,
+      "weight_decay": 0.05,
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "scheduler": "cosine",
+      "warmup_epochs": 5,
+      "min_lr": 1e-06,
+      "warmup_lr": 1e-06,
+      "layer_decay": 0.65,
+      "drop_path": 0.1,
+      "clip_grad": 1.0,
+      "pooling": "mean_patch_tokens",
+      "cuda": 2
+    }
+  }
+}

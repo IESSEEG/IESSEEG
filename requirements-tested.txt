@@ -1,0 +1,35 @@
+# Tested for the new feature-based experiments; Python 3.11
+numpy==2.2.6
+pandas==2.3.1
+scipy==1.17.1
+scikit-learn==1.7.2
+torch==2.7.1
+matplotlib==3.10.5
+PyYAML==6.0.2
+pytest==8.4.1
+# Raw-EDF input studies and selected frozen encoder extraction
+mne==1.12.1
+pyedflib==0.1.40
+timm==1.0.15
+einops==0.8.1
+linear-attention-transformer==0.19.1
+# Install separately: pip install --no-deps pyhealth==1.1.6
+
+# Duration classifier follow-up
+xgboost==3.0.5
+joblib==1.5.1
+
+# Additional model adapter dependencies
+transformers==4.51.3
+huggingface_hub==0.34.4
+safetensors==0.6.2
+lightning==2.4.0
+torchmetrics==1.4.0.post0
+tensorboardX==2.6.2.2
+tensorboard==2.17.1
+h5py==3.14.0
+opt_einsum==3.4.0
+rotary_embedding_torch==0.9.1
+torchvision==0.22.0
+torchaudio==2.7.1
+psutil==7.0.0
