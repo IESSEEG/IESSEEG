@@ -1,13 +1,13 @@
 #!/usr/bin/env python
-"""Extract native-window frozen representations for the long-EEG benchmark.
+"""Extract frozen features for the diagnosis benchmark.
 
-Run one encoder per CUDA process.  Only PRE Clinical Clips and independently
-sampled Routine Clips are extracted because those are the development and
-evaluation views used by the patient-level weak-supervision tasks.
+Run one encoder per CUDA process. Training inputs are clinician-selected EEG
+segments from pre-treatment cases and controls. Test inputs are simulated
+routine EEG segments.
 """
 
 from __future__ import annotations
-import legacy_paths as _paths
+import paths as _paths
 
 import argparse
 from pathlib import Path

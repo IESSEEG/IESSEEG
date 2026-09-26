@@ -17,9 +17,7 @@ import pyedflib
 from scipy.signal import butter, sosfiltfilt, filtfilt, hilbert, resample_poly
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path[:0] = [str(ROOT / "legacy/analysis"),
-    str(ROOT / "baselines_reference/analysis/response_features")]
-from extract_rajaraman2024_raw_features import (
+from .qeeg_features import (
     SCALP, find_channel, automated_clean_seconds, concatenate_clean_seconds,
     contiguous_clean_epochs, matlab_firls_approximation, matlab_hist_entropy,
     dfa_intercept, fluctuation_function, analytic_phase_torch)

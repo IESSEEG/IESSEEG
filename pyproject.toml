@@ -10,7 +10,7 @@ requires-python = ">=3.10"
 dependencies = ["numpy>=1.26", "pandas>=2", "scipy>=1.11", "scikit-learn>=1.4", "joblib", "PyYAML"]
 
 [project.optional-dependencies]
-eeg = ["torch>=2.5", "mne>=1.8", "pyedflib", "timm", "einops", "linear-attention-transformer", "safetensors", "transformers", "huggingface_hub", "lightning", "tqdm", "xgboost", "matplotlib", "tensorboardX", "tensorboard", "h5py", "opt_einsum", "rotary_embedding_torch", "torchvision", "torchaudio", "psutil"]
+eeg = ["torch>=2.5", "mne>=1.8", "pyedflib", "timm", "einops", "linear-attention-transformer", "safetensors", "transformers", "huggingface_hub", "lightning", "tqdm", "matplotlib", "tensorboardX", "tensorboard", "h5py", "opt_einsum", "rotary_embedding_torch", "torchvision", "torchaudio", "psutil"]
 test = ["pytest"]
 
 [project.scripts]
@@ -24,4 +24,4 @@ iesseeg_paper = ["fixed_folds/*.csv"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = [".", "experiments", "legacy/analysis"]
+pythonpath = [".", "experiments", "encoders"]

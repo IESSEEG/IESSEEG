@@ -5,10 +5,7 @@ Follows the fine-tuning recipe from the upstream LUNA repository: AdamW
 with layer-wise learning-rate decay, a cosine schedule with warmup,
 channel-wise input normalisation, and early stopping on validation loss.
 
-The pre-trained weights are the released LUNA checkpoint; only the
-classification head is new. Note that LUNA's weights are CC BY-ND 4.0,
-which permits fine-tuning for internal use but not redistribution of the
-resulting weights, so fine-tuned checkpoints stay local.
+Pretrained weights are obtained separately from the upstream provider.
 """
 
 import argparse

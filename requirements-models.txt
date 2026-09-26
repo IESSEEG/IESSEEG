@@ -1,6 +1,5 @@
-# Versions here are the ones the recorded benchmark numbers were produced
-# with (Python 3.11). Lower bounds rather than hard pins are used
-# where a package's exact version does not affect results.
+# Python 3.11 model dependencies. See requirements-tested.txt for the
+# recorded environment; changing versions may affect numerical results.
 #
 # Install PyTorch for your own CUDA version first if 2.7.1 does not
 # match your driver: https://pytorch.org/get-started/locally/
@@ -20,7 +19,6 @@ torchmetrics
 deepspeed>=0.16               # LaBraM upstream training loop
 
 # --- classical ML ---
-xgboost>=3.0
 scikit-learn>=1.5
 
 # --- numerics and data ---

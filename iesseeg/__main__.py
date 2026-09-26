@@ -21,7 +21,7 @@ def environment(a):
     os.environ['IESSEEG_OUTPUT_ROOT']=str(work/'diagnosis_finetuned')
     os.environ['IESSEEG_TASKS']='case_control'
     os.environ['PYTHON_BIN']=sys.executable
-    paths=[ROOT,ROOT/'experiments',ROOT/'legacy/analysis',ROOT/'baselines_reference']
+    paths=[ROOT,ROOT/'experiments',ROOT/'encoders',ROOT/'baselines_reference']
     for path in reversed(paths):sys.path.insert(0,str(path))
     os.environ['PYTHONPATH']=os.pathsep.join(map(str,paths))+os.pathsep+os.environ.get('PYTHONPATH','')
     if a.pretrained:os.environ['IESSEEG_PRETRAINED_DIR']=str(a.pretrained.resolve())
@@ -57,7 +57,7 @@ def preprocess(a):
 
 
 def extract_diagnosis(a):
-    command([sys.executable,ROOT/'legacy/analysis/extract_long_frozen_representations.py','--model',a.model,'--device',a.device,'--batch-size',a.batch_size,'--output-root',a.work/'local/features/long_frozen_representations',*(['--limit',a.limit] if a.limit else [])])
+    command([sys.executable,ROOT/'encoders/extract_long_frozen_representations.py','--model',a.model,'--device',a.device,'--batch-size',a.batch_size,'--output-root',a.work/'local/features/long_frozen_representations',*(['--limit',a.limit] if a.limit else [])])
 
 
 def diagnosis(a):

@@ -6,7 +6,6 @@ Infantile Epileptic Spasms Syndrome**.
 [Dataset](https://huggingface.co/datasets/Capur/IESSEEG) ·
 [Reproduction guide](docs/REPRODUCING.md) ·
 [Model weights](docs/MODELS.md) ·
-[Validation status](docs/VALIDATION.md) ·
 [Reference results](reference/README.md)
 
 IESSEEG contains approximately 3,172 hours of original EEG from 100 pediatric
@@ -51,7 +50,7 @@ python -m iesseeg prepare --data /data/IESSEEG --work /scratch/iesseeg
 ```
 
 The dataset passes the official BIDS validator with zero errors; remaining
-metadata warnings are listed in the [validation record](docs/VALIDATION.md).
+metadata warnings are listed in the [dataset validation summary](https://huggingface.co/datasets/Capur/IESSEEG/blob/main/bids_validation.json).
 The CLI `validate` command checks benchmark data consistency, separately from BIDS.
 
 The full EEG download is approximately 119 GB. `validate --metadata-only` can
@@ -69,10 +68,8 @@ python -m iesseeg qeeg --task diagnosis \
   --data /data/IESSEEG --work /scratch/iesseeg
 ```
 
-Commands for all current-paper tasks, frozen probes, fine-tuning, and the
+Commands for all benchmark tasks, frozen probes, fine-tuning, and the
 Section 6 PLS5 analysis are in the [reproduction guide](docs/REPRODUCING.md).
-The [validation page](docs/VALIDATION.md) records the numerical checks and
-model-specific internal validation procedures.
 
 ## Evaluation
 
@@ -106,7 +103,7 @@ from the available held-out predictions. It does not retrain models.
 | `experiments/` | Training and inference kernels used by the CLI |
 | `baselines_reference/` | Model-specific adapters and attributed upstream implementations |
 | `preprocessing_reference/` | Native model input preparation |
-| `legacy/analysis/` | Shared implementation dependencies retained for numerical continuity |
+| `encoders/` | Frozen foundation-model feature extraction |
 | `configs/` | Response training recipes |
 | `tests/` | Feature, grouping, inference, and uncertainty tests |
 

@@ -17,7 +17,7 @@ process because upstream packages have overlapping Python module names.
 ## Complete run
 
 After configuring pretrained weights and the EEGPT interpreter in
-[MODELS.md](MODELS.md), run all current-paper experiments serially:
+[MODELS.md](MODELS.md), run all paper experiments serially:
 
 ```bash
 bash scripts/reproduce_all.sh "$DATASET_ROOT" "$BENCHMARK_WORK" cuda:0
@@ -52,13 +52,23 @@ python -m iesseeg diagnosis --model biot --branches frozen --device cuda:0 \
 Replace `biot` with `labram`, `cbramod`, `eegpt`, `luna`, `reve`, `codebrain`, or
 `csbrain`. LaBraM, EEGPT, REVE, CodeBrain, and CSBrain share a preprocessing
 family, so its existing inputs can be reused. `--branches frozen finetuned`
-adds model-specific full fine-tuning and test inference. Model-specific internal validation follows the original experiment; see
-[VALIDATION.md](VALIDATION.md).
+adds model-specific full fine-tuning and test inference.
 
 Diagnostic qEEG selects logistic regularization on a held-out patient validation
 fold without refitting. Frozen heads train with inherited patient labels and
 select checkpoints using validation segment AUROC. The two diagnosis targets
 are applied only at evaluation.
+
+## Training and validation partitions
+
+All outer test folds separate patients. The training and validation procedures
+are described in Appendix B.4 and implemented as follows.
+
+| Experiment | Internal validation |
+| --- | --- |
+| qEEG, frozen diagnosis heads, and response models | Fold `(f+1) mod 5` for validation, fold `f` for testing, and the remaining three folds for training |
+| Diagnosis full fine-tuning: BIOT, CBraMod, LaBraM | Clinical segments from the four non-test patient folds are split into training and validation segments |
+| Diagnosis full fine-tuning: EEGPT, LUNA, REVE, CodeBrain, CSBrain | Training and validation are split by patient within the four non-test folds |
 
 ## Table 4: treatment response
 

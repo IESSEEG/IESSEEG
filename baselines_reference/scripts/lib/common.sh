@@ -1,12 +1,5 @@
 #!/usr/bin/env bash
 # Shared setup sourced by every train/inference runner.
-#
-# This exists because the per-model runners previously each carried their
-# own copy of the same environment preamble, GPU selection, and task/fold
-# loops -- twelve copies that drifted apart over time.
-#
-# Source it, don't execute it:
-#   source "$(dirname "${BASH_SOURCE[0]}")/../lib/common.sh"
 
 set -euo pipefail
 
@@ -36,22 +29,14 @@ TASKS_DEFAULT=(case_control immediate_responder meaningful_responder)
 # ---------------------------------------------------------------------
 # Scratch space
 # ---------------------------------------------------------------------
-# Some libraries stage writes through OS-default cache/temp locations
-# regardless of the destination path (PyTorch Lightning's atomic
-# checkpoint save goes through TMPDIR via fsspec; torch.hub and other
-# XDG-compliant tools use the cache vars). On a machine whose root
-# filesystem is small or near-full, that fails far from where it was
-# configured, so point all three at a scratch directory the user chooses.
+# Keep temporary files and library caches in the selected work directory.
 IESSEEG_SCRATCH="${IESSEEG_SCRATCH:-${IESSEEG_OUTPUT_ROOT}/scratch}"
 export TMPDIR="${IESSEEG_SCRATCH}/tmp"
 export XDG_CACHE_HOME="${IESSEEG_SCRATCH}/xdg_cache"
 export TORCH_HOME="${IESSEEG_SCRATCH}/torch_cache"
 mkdir -p "${TMPDIR}" "${XDG_CACHE_HOME}" "${TORCH_HOME}"
 
-# Cap per-worker math-library threads: each DataLoader worker is its own
-# process and would otherwise try to use every core for its internal
-# NumPy/OpenMP ops. On a many-core box that oversubscribes badly (seen:
-# 10 workers -> 93 threads -> 4114% CPU, most of it context-switching).
+# Limit worker threads to avoid oversubscribing CPU cores.
 export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
 export MKL_NUM_THREADS="${MKL_NUM_THREADS:-1}"
 export OPENBLAS_NUM_THREADS="${OPENBLAS_NUM_THREADS:-1}"
@@ -77,11 +62,10 @@ split_csv () {  # task fold split -> path
 
 # Each model consumes its own montage/preprocessing tree. These mirror
 # MODEL_DATA_SUBDIR / MODEL_TEST_SUBDIR in iesseeg/config.py;
-# tests/test_config_consistency.py fails if the two ever disagree.
 model_data_dir () {  # model -> preprocessed training tree
   local subdir
   case "$1" in
-    handcrafted|cnn_resnet|cnn_vit|luna) subdir="scalp_eeg_data_200HZ_np_format" ;;
+    luna) subdir="scalp_eeg_data_200HZ_np_format" ;;
     biot)                           subdir="scalp_eeg_data_200HZ_np_format_biot" ;;
     labram|eegpt|reve|codebrain|csbrain) subdir="scalp_eeg_data_200HZ_np_format_labram" ;;
     cbramod)                        subdir="scalp_eeg_data_200HZ_np_format_cbramod" ;;
@@ -93,7 +77,7 @@ model_data_dir () {  # model -> preprocessed training tree
 model_test_dir () {  # model -> Routine-Clip evaluation tree
   local subdir
   case "$1" in
-    handcrafted|cnn_resnet|cnn_vit|luna) subdir="baseline_test" ;;
+    luna) subdir="baseline_test" ;;
     biot)                           subdir="biot_test" ;;
     labram|eegpt|reve|codebrain|csbrain) subdir="labram_test" ;;
     cbramod)                        subdir="cbramod_test" ;;
@@ -104,12 +88,6 @@ model_test_dir () {  # model -> Routine-Clip evaluation tree
 
 # Least-busy GPU with at least $1 MiB free (default 12000), or the pinned
 # CUDA_DEVICE when the caller set one.
-#
-# The default threshold is deliberately generous rather than merely
-# "enough for this job": on a shared machine another user's job can grow
-# into memory that looked free moments ago (this bit us once -- a BIOT
-# run OOM'd when another process ramped up on the GPU we had picked).
-# The margin buys headroom against that; it does not eliminate the race.
 pick_gpu () {
   if [ -n "${CUDA_DEVICE:-}" ]; then
     echo "${CUDA_DEVICE}"

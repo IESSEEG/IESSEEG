@@ -11,8 +11,7 @@ PRETRAINED="${IESSEEG_PRETRAINED_DIR:-${IESSEEG_REPO_ROOT}/pretrained-models}/LU
 if [ ! -f "${PRETRAINED}" ]; then
   echo "LUNA weights not found at ${PRETRAINED}." >&2
   echo "Download LUNA_base.safetensors from https://huggingface.co/PulpBio/LUNA" >&2
-  echo "(CC BY-ND 4.0: fine-tuning for internal use is permitted, redistributing" >&2
-  echo "the fine-tuned weights is not), or set IESSEEG_PRETRAINED_DIR." >&2
+  echo "Set IESSEEG_PRETRAINED_DIR to the directory containing the weights." >&2
   exit 1
 fi
 

@@ -2,7 +2,7 @@
 """Native-window frozen encoder loaders. Used by PRE and POST extractors."""
 
 from __future__ import annotations
-import legacy_paths as _paths
+import paths as _paths
 
 import argparse
 import os

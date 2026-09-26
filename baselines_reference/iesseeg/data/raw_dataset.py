@@ -1,10 +1,7 @@
 """In-memory windowed EEG dataset shared by every deep baseline.
 
-This replaces the three near-identical `inmem_raw_dataset.py` copies that
-previously lived under biot/, labram/ and cbramod/. Those copies differed
-only in how a window is post-processed before it leaves __getitem__, so
-that step is now a named per-model policy (`window_transform`) and
-everything else -- loading, window indexing, batching -- is shared.
+Loading, indexing, and batching are shared; `window_transform` selects the
+model-specific transformation.
 
 Window transforms:
   "none"        window returned as (C, window_frames).           [LaBraM]

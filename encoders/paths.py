@@ -1,4 +1,4 @@
-"""Runtime roots for the historical experiments bundled with the paper code."""
+"""Paths for model sources, pretrained weights, and generated features."""
 import os
 from pathlib import Path
 
@@ -9,7 +9,7 @@ def runtime():
     return Path(os.environ.get('IESSEEG_LEGACY_RUNTIME','local/legacy_runtime')).expanduser().resolve()
 
 def reference():
-    return Path(__file__).resolve().parents[2] / 'baselines_reference'
+    return Path(__file__).resolve().parents[1] / 'baselines_reference'
 
 def baselines():
     return reference() / 'baselines'

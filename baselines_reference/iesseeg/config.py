@@ -1,22 +1,7 @@
-"""Path and protocol configuration for the IESSEEG benchmark.
+"""Paths and label columns used by the model-specific diagnosis adapters.
 
-Every path the benchmark needs is resolved here, from environment
-variables with sensible defaults, so that no script in the repository
-carries a machine-specific absolute path. Users set the roots once:
-
-    export IESSEEG_DATA_ROOT=/path/to/iesseeg          # preprocessed .npz trees
-    export IESSEEG_SPLIT_ROOT=/path/to/splits          # optional, defaults to ./splits
-
-Preprocessed data is expected in the per-model layout produced by the
-the original IESSEEG preprocessing layout:
-
-    $IESSEEG_DATA_ROOT/
-        scalp_eeg_data_200HZ_np_format/          # 22-ch bipolar, GBDT + CNN/ViT
-        scalp_eeg_data_200HZ_np_format_biot/     # 18-ch BIOT montage
-        scalp_eeg_data_200HZ_np_format_labram/   # 19-ch TUEG montage
-        scalp_eeg_data_200HZ_np_format_cbramod/  # 19-ch TUEG montage
-        baseline_test/                           # Routine-Clip test recordings
-        final_test.csv                           # expert clip-level labels
+The public CLI sets IESSEEG_DATA_ROOT, IESSEEG_SPLIT_ROOT, and output paths
+from the requested dataset and work directories.
 """
 
 import os
@@ -38,16 +23,12 @@ TASK_DISPLAY = {
 }
 
 # Each model consumes its own montage/preprocessing tree, for both the
-# Clinical-Clip training pool and the Routine-Clip evaluation pool.
+# clinician-selected training segments and simulated routine test segments.
 MODEL_DATA_SUBDIR = {
-    "handcrafted": "scalp_eeg_data_200HZ_np_format",
-    "cnn_resnet": "scalp_eeg_data_200HZ_np_format",
-    "cnn_vit": "scalp_eeg_data_200HZ_np_format",
     "biot": "scalp_eeg_data_200HZ_np_format_biot",
     "labram": "scalp_eeg_data_200HZ_np_format_labram",
     "cbramod": "scalp_eeg_data_200HZ_np_format_cbramod",
-    # LUNA consumes the same 22-channel bipolar tree as the in-house
-    # baselines; its montage reordering and 200->256 Hz resampling happen
+    # LUNA montage reordering and 200->256 Hz resampling happen
     # at load time rather than in a separate preprocessing pass.
     "luna": "scalp_eeg_data_200HZ_np_format",
     # EEGPT wants a referential 10-20 montage, which is the tree the
@@ -60,13 +41,8 @@ MODEL_DATA_SUBDIR = {
     "csbrain": "scalp_eeg_data_200HZ_np_format_labram",
 }
 
-# Which baselines/ directory holds each model's runner scripts. Two
-# models can share a directory when one implementation serves both
-# (the CNN directory hosts the ResNet and the ViT).
+# Directory containing each model's runner scripts.
 MODEL_BASELINE_DIR = {
-    "handcrafted": "handcrafted",
-    "cnn_resnet": "cnn",
-    "cnn_vit": "cnn",
     "biot": "biot",
     "labram": "labram",
     "cbramod": "cbramod",
@@ -78,9 +54,6 @@ MODEL_BASELINE_DIR = {
 }
 
 MODEL_TEST_SUBDIR = {
-    "handcrafted": "baseline_test",
-    "cnn_resnet": "baseline_test",
-    "cnn_vit": "baseline_test",
     "biot": "biot_test",
     "labram": "labram_test",
     "cbramod": "cbramod_test",
@@ -131,7 +104,7 @@ def test_data_dir(model):
 
 
 def human_label_meta():
-    """Clip-level expert consensus labels, the ground truth for Task 1."""
+    """Clinician diagnosis labels for simulated routine EEG segments."""
     return os.path.join(data_root(), "final_test.csv")
 
 

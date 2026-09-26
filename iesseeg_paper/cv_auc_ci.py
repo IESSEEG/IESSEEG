@@ -1,7 +1,7 @@
 """Influence-function CV-AUROC intervals from LeDell et al. (2015).
 
 DOI: 10.1214/15-EJS1035, Sections 4.1 and 5. The point estimate is the
-unweighted mean of fold AUROCs, NOT the benchmark's legacy pair-weighted mean.
+unweighted mean of fold AUROCs.
 Global class proportions, fold-specific concordances and AUC centering, and
 patient influence sums / global mean observations per patient follow cvAUC's
 ci.cvAUC and ci.pooled.cvAUC algorithms. Variance uses mean squared influence,

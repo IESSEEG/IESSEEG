@@ -19,14 +19,12 @@ import pandas as pd
 import torch
 from torch.utils.data import DataLoader, Dataset
 ROOT = Path(__file__).resolve().parents[1]
-sys.path[:0] = [str(ROOT), str(ROOT/'experiments'), str(ROOT/'legacy/analysis')]
+sys.path[:0] = [str(ROOT), str(ROOT/'experiments'), str(ROOT/'encoders')]
 from finetune_response_windows import WindowPredictor
-from aggregate_finetuned_biot import prepare_windows
-from aggregate_response_multicrop import encode, neural, worker_init
+from experiments.response_windows import prepare_windows, encode, neural, worker_init
 from iesseeg_paper.input_studies import read_interval
 from iesseeg_paper.evaluation import require_cuda
 from iesseeg_paper.splits import validate_patient_folds
-from qeeg_window_scale import threshold, metrics
 
 
 def window_chunks(duration, seconds, batch_size):

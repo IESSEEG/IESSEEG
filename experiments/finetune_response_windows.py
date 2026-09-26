@@ -17,7 +17,7 @@ import time
 
 os.environ.setdefault('NUMBA_CACHE_DIR', '/tmp/iesseeg_numba')
 ROOT = Path(__file__).resolve().parents[1]
-sys.path[:0] = [str(ROOT), str(ROOT / 'legacy/analysis')]
+sys.path[:0] = [str(ROOT), str(ROOT / 'encoders')]
 import numpy as np
 import pandas as pd
 import torch

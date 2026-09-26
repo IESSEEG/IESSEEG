@@ -1,14 +1,9 @@
 #!/usr/bin/env python
 """Fine-tune REVE on one IESSEEG task and fold.
 
-REVE is pre-trained at 200 Hz, IESSEEG's native rate, and takes electrode
-positions explicitly, so the signal reaching the model is the released
-data itself with only channel selection and per-window standardisation
-applied.
-
-REVE's weights are distributed under a Responsible Use Agreement whose
-redistribution clause covers derivatives, so fine-tuned checkpoints stay
-local and are not published.
+The diagnosis adapter consumes preprocessed 19-channel, 200 Hz EEG with
+per-window standardization and supplies electrode positions to the encoder.
+Pretrained weights are obtained separately from the upstream provider.
 """
 
 import argparse

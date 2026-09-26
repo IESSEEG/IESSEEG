@@ -8,8 +8,6 @@ All values are proportions rather than percentages.
 - `context_results.csv`: all 30 conditions in the PRE/POST context and lead-time analysis.
 - `context_paired_differences.csv`: 36 paired AUROC comparisons for that analysis.
 
-The benchmark metrics were recomputed from the original held-out predictions
-and checked against the final experiment tables. Context results were reproduced
-by fitting the released classifiers to the original feature caches. These are
-reference aggregates, not newly trained neural-model results. Row-level
-predictions and trained models are generated locally by the reproduction commands.
+Use these tables to compare the outputs of the commands in the
+[reproduction guide](../docs/REPRODUCING.md). Row-level predictions and trained
+models are generated in the chosen work directory.
