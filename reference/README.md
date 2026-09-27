@@ -1,13 +1,14 @@
-# Published aggregate results
+# Paper results
 
-These tables provide numerical targets for reproducing the submitted paper.
-All values are proportions rather than percentages.
+These CSV files contain the results reported in the paper. Values are
+proportions rather than percentages.
 
-- `benchmark_metrics.csv`: 36 diagnosis evaluations and 34 response evaluations,
-  including the full classification metrics and confidence intervals.
-- `context_results.csv`: all 30 conditions in the PRE/POST context and lead-time analysis.
-- `context_paired_differences.csv`: 36 paired AUROC comparisons for that analysis.
+| File | Results |
+| --- | --- |
+| [benchmark_metrics.csv](benchmark_metrics.csv) | 36 diagnosis and 34 response evaluations, with classification metrics and confidence intervals |
+| [context_results.csv](context_results.csv) | 30 conditions in the recording-context and lead-time analysis |
+| [context_paired_differences.csv](context_paired_differences.csv) | 36 paired AUROC comparisons from the same analysis |
 
-Use these tables to compare the outputs of the commands in the
-[reproduction guide](../docs/REPRODUCING.md). Row-level predictions and trained
-models are generated in the chosen work directory.
+The [experiment guides](../docs/REPRODUCING.md) describe how to reproduce these
+results. See [evaluation](../docs/EVALUATION.md) for metric definitions and
+matching generated outputs to the reference tables.

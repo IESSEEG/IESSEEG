@@ -1,7 +1,7 @@
 # Pretrained models
 
-The installation script prepares all eight models. To download them separately,
-run this from the repository root after installing `requirements.txt`:
+The [setup script](../scripts/setup.sh) downloads the pretrained weights for all
+eight models. To download weights separately after installation:
 
 ```bash
 python scripts/prepare_models.py --output pretrained
@@ -31,9 +31,8 @@ If a download fails, rerun the same command. Model files remain outside Git.
 | CodeBrain | [CodeBrain](https://huggingface.co/YjMajy/CodeBrain) | `CodeBrain.pth` |
 | CSBrain | [CSBrain](https://github.com/yuchen2199/CSBrain#finetuning-csbrain-on-downstream-datasets) | `CSBrain.pth` |
 
-All paths in the table are relative to the selected output directory. If a
-provider requires a manual download, save its checkpoint at the listed path
-and rerun the script. Checkpoints retain their providers' terms.
+All paths in the table are relative to the selected output directory.
+Checkpoint licenses are listed in [THIRD_PARTY.md](../THIRD_PARTY.md).
 
 EEGPT uses Braindecode 1.7.0 from the shared requirements. REVE loads Python
 model code from the pinned upstream Hugging Face revisions.
@@ -52,13 +51,14 @@ model code from the pinned upstream Hugging Face revisions.
 | CSBrain | 30 s | 30 s | 19 scalp channels, 200 Hz |
 
 Scaling and filtering are model-specific. The diagnosis pipeline preprocesses
-complete segments before windowing. In the original CBraMod diagnosis pipeline,
+complete segments before windowing. For CBraMod diagnosis,
 simulated routine EEG inputs additionally discard the first and last 60 seconds
 after filtering, leaving 56 complete 30-second windows per routine segment.
-The release retains this preprocessing setting to reproduce the reported results;
-CBraMod training segments and the other diagnosis input families are not trimmed. The response pipeline reads and prepares
-native windows from long recordings. Section 6 computes a mean of frozen
-embeddings within each 30-minute segment and uses 10-second LaBraM windows.
+CBraMod training segments and the other diagnosis input families are not
+trimmed. Response preprocessing is applied to individual windows from long
+recordings. The recording-context analysis averages frozen embeddings within
+each 30-minute segment and uses 10-second LaBraM windows.
 
-Do not interchange frozen and fine-tuned checkpoints or caches between tasks.
-No fine-tuned weights are included in the release.
+The download script provides pretrained weights. Fine-tuned checkpoints are
+created by the [diagnosis](experiments/diagnosis.md) and
+[response](experiments/response.md) training commands.

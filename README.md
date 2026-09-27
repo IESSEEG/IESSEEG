@@ -1,28 +1,23 @@
 # IESSEEG
 
-Code for **IESSEEG: An Open EEG Dataset Towards Better Understanding of
-Infantile Epileptic Spasms Syndrome**.
+Code and experiments for **IESSEEG: An Open EEG Dataset Towards Better
+Understanding of Infantile Epileptic Spasms Syndrome**.
 
 [Dataset](https://huggingface.co/datasets/Capur/IESSEEG) ·
-[Reproduction guide](docs/REPRODUCING.md) ·
-[Model weights](docs/MODELS.md) ·
-[Reference results](reference/README.md)
+[Experiments](docs/REPRODUCING.md) ·
+[Pretrained models](docs/MODELS.md) ·
+[Results](reference/README.md)
 
-IESSEEG contains approximately 3,172 hours of original EEG from 100 pediatric
-participants, with clinician-selected EEG segments, simulated routine EEG
-segments, annotations, and clinical metadata. The benchmark evaluates IESS
-diagnosis and pre-treatment and post-treatment response prediction using qEEG
-and eight EEG foundation models.
+IESSEEG provides approximately 3,172 hours of EEG from 100 pediatric participants,
+together with clinical annotations and metadata. This repository contains the
+qEEG baselines and eight EEG foundation models evaluated on IESS diagnosis,
+pre-treatment response prediction, and post-treatment response prediction.
 
-The code accepts the downloaded v1.1 dataset directory. It preserves the
-released patient assignments, joins segments to their source recordings, and
-writes generated features, checkpoints, and predictions to a separate work
-directory. EDF files are referenced through symbolic links and are not copied
-or modified by the benchmark.
+## Installation
 
-## Install
-
-Use Linux, Python 3.11, and an NVIDIA GPU.
+The code has been tested on Linux with Python 3.11 and PyTorch 2.7.1.
+EEG feature extraction and foundation-model experiments require an NVIDIA GPU
+with CUDA support.
 
 ```bash
 git clone https://github.com/IESSEEG/IESSEEG.git
@@ -31,88 +26,97 @@ bash scripts/setup.sh --device cuda:0
 source .iesseeg-env.sh
 ```
 
-Setup creates a virtual environment, installs `requirements.txt`, downloads the
-pretrained models, and configures their paths. All eight models use this environment.
-Use `--venv /path/to/env` and `--models-dir /path/to/models` to choose where files
-are stored. Downloads are reused when setup is rerun.
+The setup script creates a virtual environment, installs the dependencies in
+[`requirements.txt`](requirements.txt), and downloads the pretrained models.
+All eight models run in the same environment. To choose a different location
+for the environment or weights, add `--venv /path/to/env` or
+`--models-dir /path/to/models` to the setup command.
 
-If you already have a Python 3.11 environment:
+<details>
+<summary>Installing in an existing Python 3.11 environment</summary>
 
 ```bash
 pip install -r requirements.txt
 python scripts/prepare_models.py --output pretrained
 source pretrained/env.sh
+python scripts/check_environment.py --device cuda:0
 ```
 
-## Prepare the dataset
+</details>
+
+## Getting started
+
+Download [IESSEEG v1.1](https://huggingface.co/datasets/Capur/IESSEEG) and prepare
+a directory for experiment outputs. Replace the two paths below with your data
+and output locations. The dataset download is approximately 119 GB; extracted
+features and model checkpoints need additional space.
 
 ```bash
-hf download Capur/IESSEEG --repo-type dataset --local-dir /data/IESSEEG
-python -m iesseeg validate --data /data/IESSEEG --work /scratch/iesseeg
-python -m iesseeg prepare --data /data/IESSEEG --work /scratch/iesseeg
+export DATASET_ROOT=/data/IESSEEG
+export BENCHMARK_WORK=/scratch/iesseeg
+
+hf download Capur/IESSEEG --repo-type dataset --local-dir "$DATASET_ROOT"
+python -m iesseeg validate --data "$DATASET_ROOT" --work "$BENCHMARK_WORK"
+python -m iesseeg prepare --data "$DATASET_ROOT" --work "$BENCHMARK_WORK"
 ```
 
-The dataset passes the official BIDS validator with zero errors; remaining
-metadata warnings are listed in the [dataset validation summary](https://huggingface.co/datasets/Capur/IESSEEG/blob/main/bids_validation.json).
-The CLI `validate` command checks benchmark data consistency, separately from BIDS.
-
-The full EEG download is approximately 119 GB. `validate --metadata-only` can
-check the tables before the signals finish downloading. Generated model inputs
-and checkpoints require additional space in the work directory.
-
-## Run an experiment
-
-For example, extract and fit the two diagnostic qEEG feature sets:
+For a first experiment, run the diagnostic qEEG baselines. These commands
+extract the features, fit logistic regression, and evaluate both diagnosis
+label definitions across the five test folds.
 
 ```bash
-python -m iesseeg extract-qeeg --task diagnosis \
-  --data /data/IESSEEG --work /scratch/iesseeg --device cuda:0
+python -m iesseeg extract-qeeg --task diagnosis --device cuda:0 \
+  --data "$DATASET_ROOT" --work "$BENCHMARK_WORK"
 python -m iesseeg qeeg --task diagnosis \
-  --data /data/IESSEEG --work /scratch/iesseeg
+  --data "$DATASET_ROOT" --work "$BENCHMARK_WORK"
 ```
 
-Commands for all benchmark tasks, frozen probes, fine-tuning, and the
-Section 6 PLS5 analysis are in the [reproduction guide](docs/REPRODUCING.md).
+The scores are printed in the terminal and saved to
+`$BENCHMARK_WORK/results/diagnosis_qeeg.csv`. See [data preparation](docs/DATA.md)
+for the dataset layout and annotation tables.
 
-## Evaluation
+## Reproducing the experiments
 
-Diagnosis predictions are evaluated on simulated routine EEG segments against
-patient diagnosis labels and clinician diagnosis labels. Response predictions
-are evaluated on complete original recordings. Foundation-model probabilities
-are averaged over all complete input windows. The main results use a probability
-threshold of 0.5.
+Each guide includes the data used, commands, training settings, and output files.
 
-AUROC is the mean across five test folds. Confidence intervals follow the
-cross-validated influence-function approach of LeDell et al. (2015), with
-patient clustering. Balanced accuracy and the additional classification metrics
-use the implemented patient-cluster influence functions. The Section 6 analysis
-uses the released sampled-segment coordinates and reports segment-level metrics.
+| Experiment | Paper results | Guide |
+| --- | --- | --- |
+| IESS diagnosis | Table 3 | [qEEG, frozen encoders, and full fine-tuning](docs/experiments/diagnosis.md) |
+| Treatment-response prediction | Table 4 | [Pre-treatment and post-treatment EEG](docs/experiments/response.md) |
+| Recording context and clinical metadata | Table 5 and Appendix C.2 | [Embeddings, whole-recording qEEG, and lead time](docs/experiments/context.md) |
+
+To run all experiments sequentially on one GPU:
 
 ```bash
-python -m iesseeg metrics --data /data/IESSEEG --work /scratch/iesseeg
-pytest -q
+bash scripts/reproduce_all.sh "$DATASET_ROOT" "$BENCHMARK_WORK" cuda:0
 ```
 
-The metrics command exports AUROC, balanced accuracy, accuracy, sensitivity,
-specificity, precision, F1, and average precision, with confidence intervals,
-from the available held-out predictions. It does not retrain models.
+This trains all eight foundation models and evaluates the complete recordings.
+For individual models or tasks, follow the guides above. The
+[evaluation guide](docs/EVALUATION.md) explains how to export metrics and compare
+them with the [paper results](reference/README.md).
 
-## Repository layout
+## Code structure
 
 | Directory | Contents |
 | --- | --- |
-| `iesseeg/` | Public CLI, released-data adapter, qEEG/context experiments, metrics |
-| `iesseeg_paper/` | Signal features, fixed folds, statistical implementations |
-| `experiments/` | Training and inference kernels used by the CLI |
-| `baselines_reference/` | Model-specific adapters and attributed upstream implementations |
-| `preprocessing_reference/` | Native model input preparation |
-| `encoders/` | Frozen foundation-model feature extraction |
-| `configs/` | Response training recipes |
-| `tests/` | Feature, grouping, inference, and uncertainty tests |
+| `iesseeg/` | Command-line interface, dataset loading, qEEG classifiers, and metadata experiments |
+| `iesseeg_paper/` | qEEG feature extraction, patient splits, and metric calculations |
+| `encoders/` | Pretrained EEG encoders and embedding extraction |
+| `baselines_reference/` | Foundation-model implementations and diagnosis training |
+| `experiments/` | Response training and recording-level evaluation |
+| `preprocessing_reference/` | Model-specific EEG preprocessing |
+| `configs/` | Response fine-tuning configurations |
+| `scripts/` | Installation, model downloads, and the complete experiment runner |
+| `docs/` | Data, model, and experiment documentation |
+| `reference/` | Results reported in the paper |
+| `tests/` | Tests for data handling, features, inference, and metrics |
 
-## Attribution
+Run the tests with `pytest -q` from the repository root.
 
-Please cite the IESSEEG paper when using the dataset or benchmark. Author
-citation metadata will be added after anonymous review. The dataset is released
-separately under CC BY 4.0. Software and upstream model notices are described in
-[THIRD_PARTY.md](THIRD_PARTY.md); no pretrained or fine-tuned weights are included.
+## License and acknowledgments
+
+The benchmark code is released under the [MIT License](LICENSE), and the
+[dataset](https://huggingface.co/datasets/Capur/IESSEEG) under CC BY 4.0.
+We thank the authors of the EEG foundation models for releasing their code and
+weights. Their licenses and attribution are listed in [THIRD_PARTY.md](THIRD_PARTY.md).
