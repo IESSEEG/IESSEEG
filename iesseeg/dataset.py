@@ -4,6 +4,7 @@ Only symbolic links are created for EEG files; original downloads are untouched.
 The adapter preserves the released patient mapping and experimental row order.
 """
 from pathlib import Path
+from importlib.resources import files
 import json
 import numpy as np
 import pandas as pd
@@ -38,8 +39,9 @@ class Dataset:
         return {'participants': len(p), 'recordings': expected, 'edf_files_checked': require_edf}
 
     def ordered(self, subset):
-        order = pd.read_csv(self.root / 'metadata/benchmark_row_order.tsv', sep='\t')
-        ids = order[order.subset.eq(subset)].sort_values('row_order').recording_id
+        # Preserve the paper runners' input order independently of release table order.
+        order = json.loads(files('iesseeg').joinpath('recording_order.json').read_text())
+        ids = order[subset]
         return self.recordings.set_index('recording_id').loc[ids].reset_index()
 
 

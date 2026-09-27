@@ -48,7 +48,7 @@ assignments. The dataset card includes a
 | Directory | Contents |
 | --- | --- |
 | `annotations/` | Patient diagnosis labels, treatment-response labels, sleep/awake labels, clinician diagnosis labels, and BASED scores |
-| `metadata/` | Segment-to-recording mappings and benchmark row ordering |
+| `metadata/` | Segment-to-recording mappings |
 | `splits/` | Five-fold patient assignments and diagnosis recording assignments |
 | `sampling/` | Segment coordinates for response-head training and the recording-context analysis |
 

@@ -19,6 +19,7 @@ iesseeg = "iesseeg.__main__:main"
 include = ["iesseeg*", "experiments*", "third_party*"]
 
 [tool.setuptools.package-data]
+iesseeg = ["recording_order.json"]
 iesseeg_paper = ["fixed_folds/*.csv"]
 
 [tool.pytest.ini_options]
