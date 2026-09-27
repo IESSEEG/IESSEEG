@@ -13,6 +13,18 @@ The full download is approximately 119 GB. `DATASET_ROOT` should contain
 `participants.tsv` and `recordings.tsv`, rather than point to an individual
 participant's directory.
 
+## Reading a recording before the full download
+
+The [dataset card](https://huggingface.co/datasets/Capur/IESSEEG#read-an-eeg-recording)
+includes a Python example that downloads one clinician-selected EEG segment
+and reads its first ten seconds with MNE. This requires only `huggingface_hub`,
+`pandas`, and `mne`; pretrained models and a GPU are not needed to read the data.
+
+The [HF preview](https://huggingface.co/datasets/Capur/IESSEEG) lets you browse
+the recording index, participant metadata, and BASED ratings. The preview's
+`records` split contains metadata rows, not a benchmark training partition.
+The five-fold assignments are stored separately in `splits/`.
+
 ## EEG and annotations
 
 | EEG subset | Files | Use in the benchmark |
@@ -26,7 +38,12 @@ and a post-treatment long recording; each control has one long recording.
 
 `recordings.tsv` lists EEG file paths and links each segment to its source
 recording and participant. `participants.tsv` contains demographics and clinical
-metadata. The accompanying JSON files describe the fields.
+metadata. Field definitions are maintained with the data in
+[recordings.json](https://huggingface.co/datasets/Capur/IESSEEG/blob/main/recordings.json)
+and [participants.json](https://huggingface.co/datasets/Capur/IESSEEG/blob/main/participants.json).
+Use `recording_id` for recording joins and `patient_id` for the released fold
+assignments. The dataset card includes a
+[join example](https://huggingface.co/datasets/Capur/IESSEEG#files-and-identifiers).
 
 | Directory | Contents |
 | --- | --- |

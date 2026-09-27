@@ -13,6 +13,8 @@ together with clinical annotations and metadata. This repository contains the
 qEEG baselines and eight EEG foundation models evaluated on IESS diagnosis,
 pre-treatment response prediction, and post-treatment response prediction.
 
+![IESSEEG recordings, EEG subsets, and benchmark tasks](docs/assets/overview.png)
+
 ## Installation
 
 The code has been tested on Linux with Python 3.11 and PyTorch 2.7.1.
@@ -45,6 +47,10 @@ python scripts/check_environment.py --device cuda:0
 </details>
 
 ## Getting started
+
+To inspect a single EEG recording first, follow the
+[small download example](https://huggingface.co/datasets/Capur/IESSEEG#read-an-eeg-recording).
+It downloads the recording index and one EDF file.
 
 Download [IESSEEG v1.1](https://huggingface.co/datasets/Capur/IESSEEG) and prepare
 a directory for experiment outputs. Replace the two paths below with your data
