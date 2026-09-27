@@ -32,7 +32,6 @@ from tensorboardX import SummaryWriter
 from data_processor.dataset import ShockDataset
 import pickle
 from scipy.signal import resample
-from pyhealth.metrics import binary_metrics_fn, multiclass_metrics_fn
 import pandas as pd
 from sklearn.metrics import r2_score
 from sklearn.metrics import mean_squared_error
@@ -43,6 +42,7 @@ from inmem_raw_dataset import InMemoryRandomDataset
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from data_utils.data_utils import create_label_from_meta_csv
+from data_utils.classification_metrics import binary_metrics_fn, multiclass_metrics_fn
 
 standard_1020 = [
     'FP1', 'FPZ', 'FP2',

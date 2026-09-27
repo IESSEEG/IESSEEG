@@ -6,9 +6,7 @@ released pre-trained encoder and adds a learned channel projection so an
 arbitrary montage can be mapped into the channel space the encoder was
 pre-trained on.
 
-Runs in its own virtualenv (see baselines/eegpt/README.md): braindecode
-1.7 is needed for the EEGPT class, while the rest of the benchmark pins
-an older release.
+Braindecode 1.7.0 is installed by the shared requirements.txt.
 """
 
 import argparse
@@ -55,7 +53,12 @@ def build_model(repo_id, n_times, device):
         chan_proj_type="conv1d_constraint", n_chans_target=N_CHANNELS,
     )
 
-    path = snapshot_download(repo_id)
+    path = os.environ.get("IESSEEG_EEGPT_UPSTREAM")
+    if path is None:
+        path = repo_id if os.path.isdir(repo_id) else snapshot_download(
+            repo_id, revision="e41cb3ae2ce4fd9eb736862292c91f8128d15618",
+            allow_patterns=["config.json", "model.safetensors"],
+        )
     state = load_file(os.path.join(path, "model.safetensors"))
     state = {k: v for k, v in state.items() if k != "chans_id"}
 

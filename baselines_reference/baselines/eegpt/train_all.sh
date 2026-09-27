@@ -1,16 +1,12 @@
 #!/usr/bin/env bash
 # EEGPT: fine-tune the released encoder for every task x fold.
 #
-# EEGPT needs braindecode >= 1.3 for its model class, which is newer than
-# the rest of the benchmark pins, so it runs from its own interpreter.
-# Point IESSEEG_PYTHON_EEGPT at that environment (see README.md).
-#
 # Set FORCE_RETRAIN=1 to retrain folds that already have a checkpoint.
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../scripts" && pwd)/lib/common.sh"
 
 STAGE_NAME="EEGPT fine-tune"
 TRAIN_DATA_DIR="$(model_data_dir eegpt)"
-EEGPT_PYTHON="${IESSEEG_PYTHON_EEGPT:-${PYTHON_BIN}}"
+EEGPT_PYTHON="${PYTHON_BIN}"
 
 eegpt_train () {
   local task="$1" fold="$2" label_key="$3" gpu="$4"

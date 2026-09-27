@@ -4,7 +4,7 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../scripts" && pwd)/lib/common.s
 
 STAGE_NAME="EEGPT inference"
 TEST_DATA_DIR="$(model_test_dir eegpt)"
-EEGPT_PYTHON="${IESSEEG_PYTHON_EEGPT:-${PYTHON_BIN}}"
+EEGPT_PYTHON="${PYTHON_BIN}"
 
 eegpt_inference () {
   local task="$1" fold="$2" label_key="$3" gpu="$4"

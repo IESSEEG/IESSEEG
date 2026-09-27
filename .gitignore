@@ -22,3 +22,5 @@ checkpoints/
 log/
 ckpts/
 result/
+
+.iesseeg-env.sh

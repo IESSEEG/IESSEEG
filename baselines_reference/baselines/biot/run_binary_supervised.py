@@ -12,7 +12,6 @@ from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.strategies import DDPStrategy
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
-from pyhealth.metrics import binary_metrics_fn
 from utils import TUABLoader, CHBMITLoader, PTBLoader, focal_loss, BCE
 from model_zoo import build_model
 from inmem_raw_dataset import InMemoryRandomDataset
@@ -25,6 +24,7 @@ from pytorch_lightning.callbacks import ModelCheckpoint
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from data_utils.data_utils import create_label_from_meta_csv
+from data_utils.classification_metrics import binary_metrics_fn
 
 def setup_seed(seed):
     """Simple function to fix the random seed for reproducibility."""

@@ -11,4 +11,4 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install -e '.[test]'
-      - run: pytest -q tests/test_cv_auc_ci.py tests/test_complete_classification_metrics.py tests/test_fixed_folds.py tests/test_paired_metrics.py
+      - run: pytest -q tests/test_cv_auc_ci.py tests/test_complete_classification_metrics.py tests/test_fixed_folds.py tests/test_paired_metrics.py tests/test_training_metrics.py

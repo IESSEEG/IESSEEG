@@ -1,12 +1,12 @@
 # Reproducing the paper
 
-Run commands from the cloned repository after installing it in editable mode.
+Run commands from the repository root after setup.
 All commands below use the same downloaded dataset and work directory:
 
 ```bash
 export DATASET_ROOT=/data/IESSEEG
 export BENCHMARK_WORK=/scratch/iesseeg
-export IESSEEG_PRETRAINED_DIR=/models/iesseeg
+source .iesseeg-env.sh
 python -m iesseeg prepare --data "$DATASET_ROOT" --work "$BENCHMARK_WORK"
 ```
 
@@ -16,8 +16,7 @@ process because upstream packages have overlapping Python module names.
 
 ## Complete run
 
-After configuring pretrained weights and the EEGPT interpreter in
-[MODELS.md](MODELS.md), run all paper experiments serially:
+Run all paper experiments serially:
 
 ```bash
 bash scripts/reproduce_all.sh "$DATASET_ROOT" "$BENCHMARK_WORK" cuda:0

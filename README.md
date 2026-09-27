@@ -22,24 +22,27 @@ or modified by the benchmark.
 
 ## Install
 
-Python 3.11 was used for the reported experiments. Install a CUDA-compatible
-PyTorch in your environment, then install this checkout in editable mode:
+Use Linux, Python 3.11, and an NVIDIA GPU.
 
 ```bash
 git clone https://github.com/IESSEEG/IESSEEG.git
 cd IESSEEG
-pip install -e '.[eeg,test]'
-pip install --no-deps pyhealth==1.1.6
+bash scripts/setup.sh --device cuda:0
+source .iesseeg-env.sh
 ```
 
-PyHealth is installed separately because its package metadata pins pandas below
-2; the benchmark uses only its metrics functions, verified with pandas 2.3.1.
+Setup creates a virtual environment, installs `requirements.txt`, downloads the
+pretrained models, and configures their paths. All eight models use this environment.
+Use `--venv /path/to/env` and `--models-dir /path/to/models` to choose where files
+are stored. Downloads are reused when setup is rerun.
 
-The exact versions of the principal packages used for the experiments are
-recorded in `requirements-tested.txt`. EEGPT uses a separate interpreter with
-Braindecode 1.7.0; see [model setup](docs/MODELS.md). For model-specific diagnosis full fine-tuning, also install
-`pip install -r requirements-models.txt`. Pretrained model weights
-are downloaded separately from their upstream providers.
+If you already have a Python 3.11 environment:
+
+```bash
+pip install -r requirements.txt
+python scripts/prepare_models.py --output pretrained
+source pretrained/env.sh
+```
 
 ## Prepare the dataset
 

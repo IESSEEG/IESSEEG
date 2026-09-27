@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Serial reproduction of the current paper. Configure upstream weights first.
+# Serial reproduction of the current paper. Run scripts/setup.sh first.
 set -euo pipefail
 if [[ $# -ne 3 ]]; then
   echo "Usage: bash scripts/reproduce_all.sh DATASET_DIRECTORY WORK_DIRECTORY cuda:N" >&2
@@ -11,7 +11,6 @@ BENCHMARK_WORK="$(realpath "$2")"
 DEVICE="$3"
 PYTHON_BIN="${PYTHON_BIN:-python}"
 : "${IESSEEG_PRETRAINED_DIR:?Set IESSEEG_PRETRAINED_DIR; see docs/MODELS.md}"
-: "${IESSEEG_PYTHON_EEGPT:?Set IESSEEG_PYTHON_EEGPT; see docs/MODELS.md}"
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 common=(--data "$DATASET_ROOT" --work "$BENCHMARK_WORK")
 "$PYTHON_BIN" -m iesseeg validate "${common[@]}"
@@ -26,7 +25,6 @@ for model in biot labram cbramod luna; do
 done
 for model in biot labram cbramod eegpt luna reve codebrain csbrain; do
   interpreter="$PYTHON_BIN"
-  if [[ "$model" == eegpt ]]; then interpreter="$IESSEEG_PYTHON_EEGPT"; fi
   "$interpreter" -m iesseeg extract-diagnosis "${common[@]}" --model "$model" --device "$DEVICE"
   "$interpreter" -m iesseeg diagnosis "${common[@]}" --model "$model" --device "$DEVICE" --branches frozen finetuned
   "$interpreter" -m iesseeg response "${common[@]}" --model "$model" --device "$DEVICE" --branches frozen finetuned --visits PRE POST
